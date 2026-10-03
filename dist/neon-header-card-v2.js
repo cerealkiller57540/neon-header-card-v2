@@ -186,6 +186,105 @@ function nhv2Rnd(min, max, dec=2) { return +(Math.random()*(max-min)+min).toFixe
 // ════════════════════════════════════════════════════════════════
 //  ÉDITEUR
 // ════════════════════════════════════════════════════════════════
+/* ── i18n FR/EN : la clé est la chaîne française (le français s'affiche tel quel) ── */
+let _lang = 'en';
+const _EN = {
+ "0 = glitch en continu. Chaque header tire son propre rythme.": "0 = continuous glitch. Each header picks its own rhythm.",
+ "Action au tap": "Tap action",
+ "Alignement H": "Horizontal align",
+ "Alignement V": "Vertical align",
+ "Animations": "Animations",
+ "Aucun": "None",
+ "Aucune": "None",
+ "Avancé": "Advanced",
+ "Bas": "Bottom",
+ "Bordure": "Border",
+ "Centre": "Centre",
+ "Chemin navigation": "Navigation path",
+ "Commun": "Shared",
+ "Couleur bordure": "Border colour",
+ "Couleur fond": "Background colour",
+ "Couleur glow": "Glow colour",
+ "Couleur icône": "Icon colour",
+ "Couleur texte": "Text colour",
+ "Couleurs": "Colours",
+ "Coupé sur mobile et iPad, comme le flicker.": "Disabled on mobile and iPad, like the flicker.",
+ "Dessus": "Top",
+ "Droite": "Right",
+ "Durée salve (s)": "Burst length (s)",
+ "Dégradé": "Gradient",
+ "Effets": "Effects",
+ "Entité (more-info)": "Entity (more-info)",
+ "Espacement lettres": "Letter spacing",
+ "Flicker": "Flicker",
+ "Flou fond": "Background blur",
+ "Fond": "Background",
+ "Fond et bordure": "Background and border",
+ "Force (1 = 2 px)": "Strength (1 = 2 px)",
+ "Gauche": "Left",
+ "Glitch découpage": "Slice glitch",
+ "Glow": "Glow",
+ "Gradient": "Gradient",
+ "Gradient début": "Gradient start",
+ "Gradient fin": "Gradient end",
+ "Haut": "Top",
+ "Icône": "Icon",
+ "Interaction": "Interaction",
+ "Italique": "Italic",
+ "Lueur": "Glow",
+ "Majuscules": "Uppercase",
+ "Mise en page": "Layout",
+ "Mode d'affichage": "Display mode",
+ "Mon Dashboard": "My Dashboard",
+ "Navigation": "Navigation",
+ "Opacité fond (0–1)": "Background opacity (0–1)",
+ "Plus d'info": "More info",
+ "Points": "Dotted",
+ "Police": "Font",
+ "Police (titre + sous-titre)": "Font (title + subtitle)",
+ "Position icône": "Icon position",
+ "Radius": "Radius",
+ "Salve toutes les (s)": "Burst every (s)",
+ "Salves aléatoires": "Random bursts",
+ "Scanline CRT": "CRT scanline",
+ "Solide": "Solid",
+ "Sous-titre": "Subtitle",
+ "Sous-titre seul": "Subtitle only",
+ "Style": "Style",
+ "Style, force, vitesse et salves du glitch : onglet Commun.": "Glitch style, strength, speed and bursts: Shared tab.",
+ "Sur le sous-titre": "On the subtitle",
+ "Sur le titre": "On the title",
+ "Taille glow": "Glow size",
+ "Taille icône": "Icon size",
+ "Taille police": "Font size",
+ "Text-shadow custom (remplace le glow)": "Custom text-shadow (replaces glow)",
+ "Texte et icône": "Text and icon",
+ "Tirets": "Dashed",
+ "Titre": "Title",
+ "Titre + Sous-titre": "Title + Subtitle",
+ "Titre seul": "Title only",
+ "Typographie": "Typography",
+ "Vitesse": "Speed",
+ "auto (1.2× police)": "auto (1.2× font)",
+ "cyber-title (2 copies, continu)": "cyber-title (2 copies, continuous)",
+ "cybr-btn (1 copie, à-coups)": "cybr-btn (1 copy, jerky)",
+ "même que police": "same as font",
+ "parcourir MDI ↗": "browse MDI ↗",
+ "var(--primary-color) ou #hex": "var(--primary-color) or #hex",
+ "Épaisseur": "Thickness",
+ "— thème HA —": "— HA theme —"
+};
+const _t = (fr) => {
+  if (_lang === 'fr' || fr == null || fr === '') return fr;
+  const k = String(fr).replace(/\s+/g, ' ').trim();
+  return _EN[k] ?? fr;
+};
+const _setLang = (h) => {
+  const l = /^fr/i.test(String(h?.locale?.language || h?.language || '')) ? 'fr' : 'en';
+  if (l === _lang) return false;
+  _lang = l; return true;
+};
+
 class NeonHeaderCardV2Editor extends HTMLElement {
   constructor() {
     super();
@@ -215,6 +314,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
 
   set hass(h) {
     this._hass = h;
+    _setLang(h); if (this._built && this._bl !== _lang) this._rebuildEditor();
     if (!this._built && this._config) { this._built = true; this._buildEditor(); }
   }
 
@@ -264,6 +364,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
   }
 
   _buildEditor() {
+    this._bl = _lang;
     this.innerHTML = `
       <style>
         :host { display:block; padding:4px 0; }
@@ -310,7 +411,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
       ${this._renderModeSelect()}
 
       <div class="tabs">
-        ${this._tabs().map(([k, l]) => `<div class="tab-btn ${this._tab===k?'active':''}" data-tab="${k}">${l}</div>`).join('')}
+        ${this._tabs().map(([k, l]) => `<div class="tab-btn ${this._tab===k?'active':''}" data-tab="${k}">${_t(l)}</div>`).join('')}
       </div>
 
       <div id="tab-title"   class="${this._tab==='title'   ? '' : 'section-hidden'}">${this._renderTitleTab()}</div>
@@ -332,7 +433,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
 
   // groupe repliable (pattern neon-compact-light / neon-switch-card), imbricable
   _grp(id, title, body) {
-    return `<ha-expansion-panel outlined data-grp="${id}" header="${title}" ${this._open.has(id) ? 'expanded' : ''}>${body}</ha-expansion-panel>`;
+    return `<ha-expansion-panel outlined data-grp="${id}" header="${_t(title)}" ${this._open.has(id) ? 'expanded' : ''}>${body}</ha-expansion-panel>`;
   }
 
   // bloc visible seulement si la condition tient : 'section.cle' (vrai), 'section.cle=valeur', alternatives par '|', '!' en tête = négation
@@ -354,11 +455,11 @@ class NeonHeaderCardV2Editor extends HTMLElement {
 
   _renderModeSelect() {
     const v = this._config?.mode ?? 'title';
-    return `<div class="field"><label>Mode d'affichage</label>
+    return `<div class="field"><label>${_t("Mode d'affichage")}</label>
       <select data-root="mode">
-        <option value="title"    ${v==='title'   ?'selected':''}>Titre seul</option>
-        <option value="subtitle" ${v==='subtitle'?'selected':''}>Sous-titre seul</option>
-        <option value="both"     ${v==='both'    ?'selected':''}>Titre + Sous-titre</option>
+        <option value="title"    ${v==='title'   ?'selected':''}>${_t('Titre seul')}</option>
+        <option value="subtitle" ${v==='subtitle'?'selected':''}>${_t('Sous-titre seul')}</option>
+        <option value="both"     ${v==='both'    ?'selected':''}>${_t('Titre + Sous-titre')}</option>
       </select></div>`;
   }
 
@@ -412,7 +513,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
             ${this._toggle('Scanline CRT', 'title', 'scanline')}
           </div>
           ${this._toggle('Glitch découpage', 'title', 'glitch')}
-          ${this._dep('title.glitch', `<p class="hint">Style, force, vitesse et salves du glitch : onglet Commun.</p>`)}
+          ${this._dep('title.glitch', `<p class="hint">${_t(`Style, force, vitesse et salves du glitch : onglet Commun.`)}</p>`)}
         `)}
         ${this._grp('title.fx.adv', 'Avancé', `
           ${this._input('Text-shadow custom (remplace le glow)', 'title', 'text_shadow', 'text', '0 0 10px #00fff9')}
@@ -467,7 +568,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
             ${this._toggle('Flicker', 'subtitle', 'flicker')}
             ${this._toggle('Glitch découpage', 'subtitle', 'glitch')}
           </div>
-          ${this._dep('subtitle.glitch', `<p class="hint">Style, force, vitesse et salves du glitch : onglet Commun.</p>`)}
+          ${this._dep('subtitle.glitch', `<p class="hint">${_t(`Style, force, vitesse et salves du glitch : onglet Commun.`)}</p>`)}
         `)}
       `)}
     `;
@@ -505,14 +606,14 @@ class NeonHeaderCardV2Editor extends HTMLElement {
       ${this._grp('shared.glitch', 'Glitch découpage', `
         ${['title','both'].includes(this._config?.mode ?? 'title') ? this._toggle('Sur le titre', 'title', 'glitch') : ''}
         ${['subtitle','both'].includes(this._config?.mode ?? 'title') ? this._toggle('Sur le sous-titre', 'subtitle', 'glitch') : ''}
-        <p class="hint">Coupé sur mobile et iPad, comme le flicker.</p>
+        <p class="hint">${_t(`Coupé sur mobile et iPad, comme le flicker.`)}</p>
         ${this._select('Style', 'shared', 'glitch_style', [['0','cyber-title (2 copies, continu)'],['1','cybr-btn (1 copie, à-coups)']])}
         <div class="row2">
           ${this._number('Force (1 = 2 px)', 'shared', 'glitch_force', '0', '5', '0.1', '1.1')}
           ${this._number('Vitesse', 'shared', 'glitch_speed', '0.1', '5', '0.1', '1.5')}
         </div>
         ${this._grp('shared.glitch.burst', 'Salves aléatoires', `
-          <p class="hint">0 = glitch en continu. Chaque header tire son propre rythme.</p>
+          <p class="hint">${_t(`0 = glitch en continu. Chaque header tire son propre rythme.`)}</p>
           <div class="row2">
             ${this._number('Salve toutes les (s)', 'shared', 'glitch_burst_every', '0', '120', '1', '0')}
             ${this._number('Durée salve (s)', 'shared', 'glitch_burst_len', '0.1', '10', '0.1', '1')}
@@ -531,40 +632,40 @@ class NeonHeaderCardV2Editor extends HTMLElement {
   // ── Form helpers ─────────────────────────────────────────────
   _input(label, section, key, type='text', placeholder='') {
     const v = this._get(section, key);
-    return `<div class="field"><label>${label}</label>
-      <input type="${type}" data-section="${section}" data-key="${key}" value="${v}" placeholder="${placeholder}"/>
+    return `<div class="field"><label>${_t(label)}</label>
+      <input type="${type}" data-section="${section}" data-key="${key}" value="${v}" placeholder="${_t(placeholder)}"/>
     </div>`;
   }
 
   _textarea(label, section, key, placeholder='') {
     const v = this._get(section, key);
-    return `<div class="field"><label>${label}</label>
-      <textarea data-section="${section}" data-key="${key}" placeholder="${placeholder}">${v}</textarea>
+    return `<div class="field"><label>${_t(label)}</label>
+      <textarea data-section="${section}" data-key="${key}" placeholder="${_t(placeholder)}">${v}</textarea>
     </div>`;
   }
 
   _px(label, section, key, defaultVal='') {
     const raw = this._get(section, key);
     const num = parseFloat(raw);
-    return `<div class="field"><label>${label}</label>
+    return `<div class="field"><label>${_t(label)}</label>
       <div style="display:flex;gap:4px;align-items:center">
         <input type="number" data-section="${section}" data-key="${key}" data-px="1"
-               value="${isNaN(num)?'':num}" placeholder="${defaultVal}" min="0" step="1" style="flex:1"/>
+               value="${isNaN(num)?'':num}" placeholder="${_t(defaultVal)}" min="0" step="1" style="flex:1"/>
         <span style="font-size:11px;color:var(--secondary-text-color)">px</span>
       </div></div>`;
   }
 
   _select(label, section, key, opts) {
     const v = this._get(section, key);
-    return `<div class="field"><label>${label}</label>
+    return `<div class="field"><label>${_t(label)}</label>
       <select data-section="${section}" data-key="${key}">
-        ${opts.map(([val,lbl]) => `<option value="${val}" ${String(v)===String(val)?'selected':''}>${lbl}</option>`).join('')}
+        ${opts.map(([val,lbl]) => `<option value="${val}" ${String(v)===String(val)?'selected':''}>${_t(lbl)}</option>`).join('')}
       </select></div>`;
   }
 
   _toggle(label, section, key) {
     const v = !!this._get(section, key);
-    return `<div class="field toggle-field"><label>${label}</label>
+    return `<div class="field toggle-field"><label>${_t(label)}</label>
       <label class="switch">
         <input type="checkbox" data-section="${section}" data-key="${key}" ${v?'checked':''}/>
         <span class="slider"></span>
@@ -573,17 +674,17 @@ class NeonHeaderCardV2Editor extends HTMLElement {
 
   _color(label, section, key, defaultHex='#ffffff') {
     const v = this._get(section, key) || '';
-    return `<div class="field"><label>${label}</label>
+    return `<div class="field"><label>${_t(label)}</label>
       <div class="color-row">
         <input type="color" data-section="${section}" data-key="${key}" value="${v||defaultHex}" ${!v?'style="opacity:0.4"':''}/>
-        <input type="text"  data-section="${section}" data-key="${key}" value="${v}" placeholder="var(--primary-color) ou #hex" class="color-text"/>
+        <input type="text"  data-section="${section}" data-key="${key}" value="${v}" placeholder="${_t('var(--primary-color) ou #hex')}" class="color-text"/>
       </div></div>`;
   }
 
   _iconPicker(label, section, key) {
     const v = this._get(section, key) || '';
     return `<div class="field">
-      <label>${label} — <a href="https://pictogrammers.com/library/mdi/" target="_blank" rel="noopener" style="color:var(--primary-color);font-size:10px">parcourir MDI ↗</a></label>
+      <label>${_t(label)} — <a href="https://pictogrammers.com/library/mdi/" target="_blank" rel="noopener" style="color:var(--primary-color);font-size:10px">${_t('parcourir MDI ↗')}</a></label>
       <div class="icon-row">
         <input type="text" data-section="${section}" data-key="${key}" value="${v}" placeholder="mdi:home" class="icon-input"/>
         <div class="icon-preview" data-preview="${section}-${key}"></div>
@@ -607,17 +708,17 @@ class NeonHeaderCardV2Editor extends HTMLElement {
 
   _number(label, section, key, min='0', max='100', step='1', placeholder='') {
     const v = this._get(section, key);
-    return `<div class="field"><label>${label}</label>
+    return `<div class="field"><label>${_t(label)}</label>
       <input type="number" data-section="${section}" data-key="${key}"
-             value="${v}" min="${min}" max="${max}" step="${step}" placeholder="${placeholder}"/>
+             value="${v}" min="${min}" max="${max}" step="${step}" placeholder="${_t(placeholder)}"/>
     </div>`;
   }
 
   _fontSelect(label, section, key) {
     const v = this._get(section, key);
-    return `<div class="field"><label>${label}</label>
+    return `<div class="field"><label>${_t(label)}</label>
       <select data-section="${section}" data-key="${key}">
-        <option value="" ${!v?'selected':''}>— thème HA —</option>
+        <option value="" ${!v?'selected':''}>${_t('— thème HA —')}</option>
         ${NHV2_FONTS.map(f => `<option value="${f}" ${v===f?'selected':''}>${f}</option>`).join('')}
       </select></div>`;
   }

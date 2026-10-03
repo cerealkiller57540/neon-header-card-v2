@@ -135,7 +135,7 @@ Each card draws its own random phase and burst timing, so several headers on a p
 
 **Why does nothing glitch?** The effect is opt-in per text: set `title.glitch: true` (or `subtitle.glitch: true`). It is also off on phones and tablets, and when the system asks for reduced motion.
 
-**The editor labels are in French.** Translation is on the way. Every option can also be set in YAML.
+**Which languages are supported?** English and French. The editor and the card texts follow your Home Assistant language: French if it is French, English otherwise. Reload the page after changing the language. Every option can also be set in YAML.
 
 **Which theme is in the screenshots?** Neo Tokyo, the author's own dark theme (not published). The card works with any theme.
 
