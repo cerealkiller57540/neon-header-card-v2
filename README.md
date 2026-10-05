@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏷️ Neon Header Card v2
+<img src="https://raw.githubusercontent.com/cerealkiller57540/neon-header-card-v2/main/images/logo.png" alt="Neon Header Card v2" width="480">
 
 **A light, static title and subtitle header for Home Assistant, with neon glow, gradient text, flicker, CRT scanline and a slice glitch.**
 
