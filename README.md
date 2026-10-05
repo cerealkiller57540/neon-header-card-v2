@@ -13,6 +13,8 @@
 
 <img src="https://raw.githubusercontent.com/cerealkiller57540/neon-header-card-v2/main/images/main.png" alt="Six neon headers: a gradient title with an icon, a yellow title with a subtitle, a glitching red-to-orange title, a green flickering title with scanlines, a centred title with the icon on top, and a framed pink title" width="760">
 
+<img src="https://raw.githubusercontent.com/cerealkiller57540/neon-header-card-v2/main/images/live.webp" alt="Three neon section headers (Meteo, Energie, Confort) animating: scanlines, a glitching title" width="760">
+
 </div>
 
 A section header you can put above any group of cards. It draws a title, a subtitle or both, with an `mdi:` icon, and nothing else: no template engine, no entity states, so it stays cheap even when a dashboard carries thirty of them. Every effect is opt-in and switched off on phones and tablets (like `flicker`), and under `prefers-reduced-motion`.
