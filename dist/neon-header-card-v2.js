@@ -63,7 +63,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.2.1';
+const NHV2_VERSION = '4.3.0';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -368,20 +368,22 @@ class NeonHeaderCardV2Editor extends HTMLElement {
     this.innerHTML = `
       <style>
         :host { display:block; padding:4px 0; }
-        h3 { font-size:11px; font-weight:700; color:var(--primary-color); text-transform:uppercase;
+        neon-header-card-v2-editor { --ned-label:color-mix(in srgb,var(--primary-text-color) 82%,transparent); --ned-dim:color-mix(in srgb,var(--primary-text-color) 60%,transparent);
+          --ned-accent:color-mix(in srgb,var(--primary-color) 55%,var(--primary-text-color)); --ned-line:color-mix(in srgb,var(--primary-color) 55%,transparent); }
+        h3 { font-size:11px; font-weight:700; color:var(--ned-accent); text-transform:uppercase;
              letter-spacing:1.5px; margin:16px 0 8px; padding-bottom:4px;
-             border-bottom:1px solid var(--divider-color); }
+             border-bottom:1px solid var(--ned-line); }
         .tabs { display:flex; gap:4px; margin-bottom:16px; }
-        .tab-btn { flex:1; padding:6px 0; border:1px solid var(--divider-color); border-radius:6px;
+        .tab-btn { flex:1; padding:6px 0; border:1px solid var(--ned-line); border-radius:6px;
                    background:transparent; color:var(--primary-text-color); font-size:12px;
                    cursor:pointer; transition:all .2s; text-align:center; user-select:none;
                    pointer-events:all !important; }
         .tab-btn.active { background:var(--primary-color); color:#fff; border-color:var(--primary-color); }
         .field { margin-bottom:10px; }
-        label { display:block; font-size:11px; color:var(--secondary-text-color); margin-bottom:3px; }
+        label { display:block; font-size:11px; color:var(--ned-label); margin-bottom:3px; }
         input[type=text],input[type=number],select,textarea {
           width:100%; box-sizing:border-box; padding:6px 8px; border-radius:6px;
-          border:1px solid var(--divider-color); background:var(--card-background-color);
+          border:1px solid var(--ned-line); background:var(--card-background-color);
           color:var(--primary-text-color); font-size:12px; }
         textarea { resize:vertical; min-height:48px; }
         .row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
@@ -396,15 +398,16 @@ class NeonHeaderCardV2Editor extends HTMLElement {
                           background:#fff; border-radius:50%; transition:.3s; }
         input:checked + .slider { background:var(--primary-color); }
         input:checked + .slider:before { transform:translateX(16px); }
-        .hint { font-size:10px; color:var(--disabled-text-color); margin:2px 0 0; }
+        .hint { font-size:10px; color:var(--ned-dim); margin:2px 0 0; }
         .section-hidden { display:none; }
         .icon-row { display:flex; gap:8px; align-items:center; }
         .icon-row .icon-input { flex:1; }
-        ha-expansion-panel { display:block; margin:8px 0; --expansion-panel-content-padding:6px 12px 10px; }
+        ha-expansion-panel { display:block; margin:8px 0; --expansion-panel-content-padding:6px 12px 10px;
+          --outline-color:var(--ned-line); --expansion-panel-summary-padding:0 12px; color:var(--primary-text-color); }
         ha-expansion-panel ha-expansion-panel { margin:6px 0; }
         .dep-off { display:none; }
         .icon-preview { width:32px; height:32px; display:flex; align-items:center; justify-content:center;
-                        border:1px solid var(--divider-color); border-radius:6px; flex-shrink:0;
+                        border:1px solid var(--ned-line); border-radius:6px; flex-shrink:0;
                         color:var(--primary-text-color); }
       </style>
 
@@ -651,7 +654,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
       <div style="display:flex;gap:4px;align-items:center">
         <input type="number" data-section="${section}" data-key="${key}" data-px="1"
                value="${isNaN(num)?'':num}" placeholder="${_t(defaultVal)}" min="0" step="1" style="flex:1"/>
-        <span style="font-size:11px;color:var(--secondary-text-color)">px</span>
+        <span style="font-size:11px;color:var(--ned-label)">px</span>
       </div></div>`;
   }
 
@@ -684,7 +687,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
   _iconPicker(label, section, key) {
     const v = this._get(section, key) || '';
     return `<div class="field">
-      <label>${_t(label)} — <a href="https://pictogrammers.com/library/mdi/" target="_blank" rel="noopener" style="color:var(--primary-color);font-size:10px">${_t('parcourir MDI ↗')}</a></label>
+      <label>${_t(label)} — <a href="https://pictogrammers.com/library/mdi/" target="_blank" rel="noopener" style="color:var(--ned-accent);font-size:10px">${_t('parcourir MDI ↗')}</a></label>
       <div class="icon-row">
         <input type="text" data-section="${section}" data-key="${key}" value="${v}" placeholder="mdi:home" class="icon-input"/>
         <div class="icon-preview" data-preview="${section}-${key}"></div>
@@ -700,9 +703,9 @@ class NeonHeaderCardV2Editor extends HTMLElement {
     return `<div class="field"><label>Padding</label>
       <div style="display:flex;gap:6px;align-items:center">
         <input type="number" data-padding="v" value="${v}" min="0" step="1" placeholder="8" style="flex:1"/>
-        <span style="font-size:11px;color:var(--secondary-text-color)">px ↕</span>
+        <span style="font-size:11px;color:var(--ned-label)">px ↕</span>
         <input type="number" data-padding="h" value="${h}" min="0" step="1" placeholder="16" style="flex:1"/>
-        <span style="font-size:11px;color:var(--secondary-text-color)">px ↔</span>
+        <span style="font-size:11px;color:var(--ned-label)">px ↔</span>
       </div></div>`;
   }
 
