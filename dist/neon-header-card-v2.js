@@ -63,7 +63,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.1';
+const NHV2_VERSION = '4.2.1';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -164,7 +164,7 @@ function nhv2BuildConfig(raw) {
     tap_action:     r.shared?.tap_action     ?? 'none',
     navigation_path: r.shared?.navigation_path ?? null,
     entity:         r.shared?.entity         ?? null,
-    // glitch: defaults tuned on a test bench
+    // glitch : défauts
     glitch_style:       nhv2Num(r.shared?.glitch_style, 0) ? 1 : 0,
     glitch_force:       nhv2Num(r.shared?.glitch_force, 1.1),
     glitch_speed:       Math.max(.1, nhv2Num(r.shared?.glitch_speed, 1.5)),
@@ -890,7 +890,7 @@ class NeonHeaderCardV2 extends HTMLElement {
     this._glitchStop();
   }
 
-  /* salves aléatoires : attente burst_every × (0,5..1,5), then the nhv2-gon class for burst_len (test bench) */
+  /* salves aléatoires : attente burst_every × (0,5..1,5), puis classe nhv2-gon pendant burst_len */
   _glitchStart() {
     this._glitchStop();
     const c = this._config, sh = c?.shared;
@@ -1070,7 +1070,7 @@ class NeonHeaderCardV2 extends HTMLElement {
 
     const interactive = sh.tap_action !== 'none';
 
-    // ── Slice glitch (ported from the .cyber-title effect, without RGB fringes) ──
+    // ── Glitch découpage (port du .cyber-title sans franges RGB) ──
     const glitchAny = t.glitch || s.glitch;
     const glitchCss = glitchAny ? this._glitchCss(sh,
       t.glitch && t.gradient ? `linear-gradient(90deg,${tGradFrom},${tGradTo})` : null,
