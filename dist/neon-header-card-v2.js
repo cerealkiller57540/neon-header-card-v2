@@ -63,7 +63,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.3.0';
+const NHV2_VERSION = '4.3.1';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -883,6 +883,7 @@ class NeonHeaderCardV2 extends HTMLElement {
     if (!hasCard || !hasBaseStyle || !this._rendered) { this._cleanup(); this._render(); }
   }
 
+  getGridOptions() { return { columns: 12, min_columns: 6 }; }
   getCardSize() {
     const mode = this._config?.mode ?? 'title';
     return mode === 'subtitle' ? 1 : 2;
