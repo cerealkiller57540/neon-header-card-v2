@@ -19,6 +19,7 @@
  *     glow: false
  *     glow_color: null
  *     glow_size: 12
+ *     icon_glow_size: null   # halo de l'icône ; null = glow_size
  *     gradient: false
  *     gradient_from: null
  *     gradient_to: null
@@ -63,7 +64,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.3.1';
+const NHV2_VERSION = '4.4.0';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -119,6 +120,7 @@ function nhv2BuildConfig(raw) {
     glow:           r.title?.glow          ?? false,
     glow_color:     r.title?.glow_color    ?? null,
     glow_size:      r.title?.glow_size     ?? 12,
+    icon_glow_size: r.title?.icon_glow_size ?? null,
     gradient:       r.title?.gradient      ?? false,
     gradient_from:  r.title?.gradient_from ?? null,
     gradient_to:    r.title?.gradient_to   ?? null,
@@ -143,6 +145,7 @@ function nhv2BuildConfig(raw) {
     glow:           r.subtitle?.glow          ?? false,
     glow_color:     r.subtitle?.glow_color    ?? null,
     glow_size:      r.subtitle?.glow_size     ?? 6,
+    icon_glow_size: r.subtitle?.icon_glow_size ?? null,
     gradient:       r.subtitle?.gradient      ?? false,
     gradient_from:  r.subtitle?.gradient_from ?? null,
     gradient_to:    r.subtitle?.gradient_to   ?? null,
@@ -255,6 +258,7 @@ const _EN = {
  "Sur le sous-titre": "On the subtitle",
  "Sur le titre": "On the title",
  "Taille glow": "Glow size",
+ "Taille glow icône": "Icon glow size",
  "Taille icône": "Icon size",
  "Taille police": "Font size",
  "Text-shadow custom (remplace le glow)": "Custom text-shadow (replaces glow)",
@@ -501,6 +505,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
           ${this._dep('title.glow', `
             ${this._color('Couleur glow', 'title', 'glow_color', '#00fff9')}
             ${this._px('Taille glow', 'title', 'glow_size', '12')}
+            ${this._px('Taille glow icône', 'title', 'icon_glow_size', this._get('title','glow_size') || '12')}
           `)}
         `)}
         ${this._grp('title.fx.grad', 'Dégradé', `
@@ -557,6 +562,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
           ${this._dep('subtitle.glow', `
             ${this._color('Couleur glow', 'subtitle', 'glow_color', '#00fff9')}
             ${this._px('Taille glow', 'subtitle', 'glow_size', '6')}
+            ${this._px('Taille glow icône', 'subtitle', 'icon_glow_size', this._get('subtitle','glow_size') || '6')}
           `)}
         `)}
         ${this._grp('subtitle.fx.grad', 'Dégradé', `
@@ -1044,6 +1050,7 @@ class NeonHeaderCardV2 extends HTMLElement {
     const activeIconSize  = mode === 'subtitle' ? sIconSize  : tIconSize;
     const activeGlowColor = mode === 'subtitle' ? sGlowColor : tGlowColor;
     const activeGlowSize  = mode === 'subtitle' ? sGlowSize  : tGlowSize;
+    const activeIconGlowSize = parseFloat(mode === 'subtitle' ? s.icon_glow_size : t.icon_glow_size) || activeGlowSize;
     const activeGlowEnabled = mode === 'subtitle' ? s.glow : t.glow;
 
     // bg
@@ -1207,8 +1214,8 @@ class NeonHeaderCardV2 extends HTMLElement {
           overflow: visible;
           ${!activeGlowEnabled ? ''
             : mode === 'subtitle'
-            ? `filter:drop-shadow(0 0 ${Math.round(activeGlowSize*.3)}px ${activeGlowColor}) drop-shadow(0 0 ${Math.round(activeGlowSize*.6)}px ${activeGlowColor});`
-            : `filter:drop-shadow(0 0 ${Math.round(activeGlowSize*.2)}px #fff) drop-shadow(0 0 ${Math.round(activeGlowSize*.4)}px ${activeGlowColor}) drop-shadow(0 0 ${Math.round(activeGlowSize*.8)}px ${activeGlowColor}) drop-shadow(0 0 ${activeGlowSize}px ${activeGlowColor});`}
+            ? `filter:drop-shadow(0 0 ${Math.round(activeIconGlowSize*.3)}px ${activeGlowColor}) drop-shadow(0 0 ${Math.round(activeIconGlowSize*.6)}px ${activeGlowColor});`
+            : `filter:drop-shadow(0 0 ${Math.round(activeIconGlowSize*.2)}px #fff) drop-shadow(0 0 ${Math.round(activeIconGlowSize*.4)}px ${activeGlowColor}) drop-shadow(0 0 ${Math.round(activeIconGlowSize*.8)}px ${activeGlowColor}) drop-shadow(0 0 ${activeIconGlowSize}px ${activeGlowColor});`}
           ${t.flicker ? tFlickAnim : ''}
         }
 

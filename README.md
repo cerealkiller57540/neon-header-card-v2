@@ -108,6 +108,7 @@ Each card draws its own random phase and burst timing, so several headers on a p
 | `uppercase` / `italic` | `false` | Text style |
 | `color` | theme | Text colour |
 | `glow` / `glow_color` / `glow_size` | `false` / — / `12` (title), `6` (subtitle) | Neon glow |
+| `icon_glow_size` | `glow_size` | Icon glow radius, independent of the text glow — a larger value spreads the halo thinner and keeps thin icons crisp |
 | `gradient` / `gradient_from` / `gradient_to` | `false` | Two-colour gradient text |
 | `flicker` | `false` | Neon flicker |
 | `scanline` | `false` | CRT scanline (title only) |
