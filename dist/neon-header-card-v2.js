@@ -64,7 +64,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.4.0';
+const NHV2_VERSION = '4.4.1';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -1390,6 +1390,26 @@ class NeonHeaderCardV2 extends HTMLElement {
   }
 }
 
+// Une valeur de config interpolée dans un <style> ne doit pas pouvoir le refermer.
+function _nhv2CfgSafe(v, path) {
+  if (typeof v === 'string') return v.replace(/<\/(style)/gi, '<\\/$1');
+  if (!v || typeof v !== 'object') return v;
+  const isArr = Array.isArray(v);
+  let out = v;
+  for (const k of Object.keys(v)) {
+    const p = isArr ? path : (path ? path + '.' + k : k);
+    const nv = _nhv2CfgSafe(v[k], p);
+    if (nv !== v[k]) {
+      if (out === v) out = isArr ? v.slice() : { ...v };
+      out[k] = nv;
+    }
+  }
+  return out;
+}
+{
+  const _setCfg = NeonHeaderCardV2.prototype.setConfig;
+  NeonHeaderCardV2.prototype.setConfig = function (c) { return _setCfg.call(this, _nhv2CfgSafe(c, '')); };
+}
 customElements.define('neon-header-card-v2', NeonHeaderCardV2);
 
 window.customCards = window.customCards || [];
