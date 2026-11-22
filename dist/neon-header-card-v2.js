@@ -1,4 +1,4 @@
-/* ── neon-header-card-v2 v4.1 ── */
+/* ── neon-header-card-v2 v4.4.2 ── */
 /**
  * neon-header-card-v2
  *
@@ -64,7 +64,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.4.1';
+const NHV2_VERSION = '4.4.2';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
