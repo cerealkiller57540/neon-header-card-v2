@@ -23,7 +23,7 @@ A section header you can put above any group of cards. It draws a title, a subti
 
 ## ✨ Features
 
-- **Title, subtitle, or both** (`mode`), each with its own font, size, weight, letter spacing, colour, `uppercase` and `italic`. Fonts such as Orbitron, Rajdhani or Share Tech Mono are loaded from Google Fonts on demand.
+- **Title, subtitle, or both** (`mode`), each with its own font, size, weight, letter spacing, colour, `uppercase` and `italic`. A font set in `font_family` (Orbitron, Rajdhani, Share Tech Mono…) is loaded from Google Fonts; leave it empty to keep your theme font and make no external request.
 - **Icon** from `mdi:`, on the left, on the right or on top of the text.
 - **Neon glow** (`glow`, `glow_color`, `glow_size`), **two-colour gradient text**, raw `text_shadow`.
 - **Flicker** and **CRT scanline** on the title, **flicker** on the subtitle.
@@ -139,6 +139,8 @@ Each card draws its own random phase and burst timing, so several headers on a p
 **Why does nothing glitch?** The effect is opt-in per text: set `title.glitch: true` (or `subtitle.glitch: true`). It is also off on phones and tablets, and when the system asks for reduced motion.
 
 **Which languages are supported?** English and French. The editor and the card texts follow your Home Assistant language: French if it is French, English otherwise. Reload the page after changing the language. Every option can also be set in YAML.
+
+**Does the card contact Google Fonts?** Not by default. Text inherits your theme font and no request leaves your Home Assistant. Only if you set a name in `font_family` (title, subtitle or shared) does the card load that family from `fonts.googleapis.com`. Leave it empty to keep everything local: any name you enter, even a font already on your device, is requested from Google.
 
 **Which theme is in the screenshots?** Neo Tokyo, the author's own dark theme (not published). The card works with any theme.
 

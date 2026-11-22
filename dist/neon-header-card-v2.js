@@ -1,4 +1,4 @@
-/* ── neon-header-card-v2 v4.4.2 ── */
+/* ── neon-header-card-v2 v4.4.3 ── */
 /**
  * neon-header-card-v2
  *
@@ -64,7 +64,7 @@
  *  Pour du contenu dynamique (états, templates, HTML), utiliser neon-markdown-card.
  */
 
-const NHV2_VERSION = '4.4.2';
+const NHV2_VERSION = '4.4.3';
 
 // ── Device detection — préfixé NHV2_ ────────────────────────────
 const NHV2_IS_IPAD = /iPad/.test(navigator.userAgent) ||
@@ -99,6 +99,8 @@ function nhv2LoadFont(family) {
 }
 
 // ── Config normalizer ────────────────────────────────────────────
+// Valeur de config remise dans le HTML de l'éditeur (attribut ou <textarea>) : échappée pour qu'un texte YAML ne devienne pas du balisage.
+function nhv2EscAttr(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function nhv2Num(v, d) { const n = parseFloat(v); return Number.isFinite(n) ? n : d; }
 
 function nhv2BuildConfig(raw) {
@@ -642,14 +644,14 @@ class NeonHeaderCardV2Editor extends HTMLElement {
   _input(label, section, key, type='text', placeholder='') {
     const v = this._get(section, key);
     return `<div class="field"><label>${_t(label)}</label>
-      <input type="${type}" data-section="${section}" data-key="${key}" value="${v}" placeholder="${_t(placeholder)}"/>
+      <input type="${type}" data-section="${section}" data-key="${key}" value="${nhv2EscAttr(v)}" placeholder="${_t(placeholder)}"/>
     </div>`;
   }
 
   _textarea(label, section, key, placeholder='') {
     const v = this._get(section, key);
     return `<div class="field"><label>${_t(label)}</label>
-      <textarea data-section="${section}" data-key="${key}" placeholder="${_t(placeholder)}">${v}</textarea>
+      <textarea data-section="${section}" data-key="${key}" placeholder="${_t(placeholder)}">${nhv2EscAttr(v)}</textarea>
     </div>`;
   }
 
@@ -685,8 +687,8 @@ class NeonHeaderCardV2Editor extends HTMLElement {
     const v = this._get(section, key) || '';
     return `<div class="field"><label>${_t(label)}</label>
       <div class="color-row">
-        <input type="color" data-section="${section}" data-key="${key}" value="${v||defaultHex}" ${!v?'style="opacity:0.4"':''}/>
-        <input type="text"  data-section="${section}" data-key="${key}" value="${v}" placeholder="${_t('var(--primary-color) ou #hex')}" class="color-text"/>
+        <input type="color" data-section="${section}" data-key="${key}" value="${nhv2EscAttr(v||defaultHex)}" ${!v?'style="opacity:0.4"':''}/>
+        <input type="text"  data-section="${section}" data-key="${key}" value="${nhv2EscAttr(v)}" placeholder="${_t('var(--primary-color) ou #hex')}" class="color-text"/>
       </div></div>`;
   }
 
@@ -695,7 +697,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
     return `<div class="field">
       <label>${_t(label)} — <a href="https://pictogrammers.com/library/mdi/" target="_blank" rel="noopener" style="color:var(--ned-accent);font-size:10px">${_t('parcourir MDI ↗')}</a></label>
       <div class="icon-row">
-        <input type="text" data-section="${section}" data-key="${key}" value="${v}" placeholder="mdi:home" class="icon-input"/>
+        <input type="text" data-section="${section}" data-key="${key}" value="${nhv2EscAttr(v)}" placeholder="mdi:home" class="icon-input"/>
         <div class="icon-preview" data-preview="${section}-${key}"></div>
       </div>
     </div>`;
@@ -719,7 +721,7 @@ class NeonHeaderCardV2Editor extends HTMLElement {
     const v = this._get(section, key);
     return `<div class="field"><label>${_t(label)}</label>
       <input type="number" data-section="${section}" data-key="${key}"
-             value="${v}" min="${min}" max="${max}" step="${step}" placeholder="${_t(placeholder)}"/>
+             value="${nhv2EscAttr(v)}" min="${min}" max="${max}" step="${step}" placeholder="${_t(placeholder)}"/>
     </div>`;
   }
 
